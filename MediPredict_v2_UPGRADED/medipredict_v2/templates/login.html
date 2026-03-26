@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Login — MediPredict{% endblock %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-logo">⚕</div>
+        <h1 class="auth-title" data-en="Welcome Back" data-hi="वापसी पर स्वागत है">Welcome Back</h1>
+        <p class="auth-subtitle" data-en="Login to access your health dashboard" data-hi="अपने स्वास्थ्य डैशबोर्ड तक पहुंचने के लिए लॉग इन करें">Login to access your health dashboard</p>
+        {% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
+        <form action="{{ url_for('login') }}" method="POST" class="auth-form">
+            <div class="form-group">
+                <label data-en="Username" data-hi="उपयोगकर्ता नाम">Username</label>
+                <input type="text" name="username" class="form-input" placeholder="Enter username" required>
+            </div>
+            <div class="form-group">
+                <label data-en="Password" data-hi="पासवर्ड">Password</label>
+                <input type="password" name="password" class="form-input" placeholder="Enter password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full btn-large" data-en="Login →" data-hi="लॉग इन →">Login →</button>
+        </form>
+        <div class="auth-skip">
+            <span data-en="Don't have an account?" data-hi="खाता नहीं है?">Don't have an account?</span>
+            <a href="{{ url_for('register') }}" data-en="Register here" data-hi="यहाँ रजिस्टर करें">Register here</a>
+        </div>
+        <div class="auth-skip">
+            <a href="{{ url_for('symptoms') }}" data-en="Skip login →" data-hi="लॉगिन छोड़ें →">Skip login and check symptoms →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

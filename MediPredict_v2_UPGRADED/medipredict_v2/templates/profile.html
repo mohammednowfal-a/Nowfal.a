@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}My Profile — MediPredict{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title">👤 My Profile</h1>
+        <p class="page-subtitle">Manage your health profile, history & bookmarks</p>
+    </div>
+</div>
+<div class="container profile-container">
+    <div class="profile-grid">
+
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <div class="profile-avatar">{{ (user.name or user.username)[0].upper() }}</div>
+            <h2>{{ user.name or user.username }}</h2>
+            <p class="profile-meta">@{{ user.username }}</p>
+            {% if user.blood_group %}<span class="blood-badge">🩸 {{ user.blood_group }}</span>{% endif %}
+
+            <form action="{{ url_for('profile') }}" method="POST" class="profile-form">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" class="form-input" value="{{ user.name or '' }}" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" name="age" class="form-input" value="{{ user.age or '' }}" placeholder="Age">
+                </div>
+                <div class="form-group">
+                    <label>Blood Group</label>
+                    <select name="blood_group" class="form-input">
+                        <option value="">Select</option>
+                        {% for bg in ['A+','A-','B+','B-','AB+','AB-','O+','O-'] %}
+                        <option {% if user.blood_group == bg %}selected{% endif %}>{{ bg }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" name="city" class="form-input" value="{{ user.city or '' }}" placeholder="Your city">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">💾 Save Profile</button>
+            </form>
+        </div>
+
+        <div class="profile-right">
+            <!-- Bookmarks -->
+            <div class="profile-section">
+                <h3>⭐ Bookmarked Diseases ({{ bookmarks|length }})</h3>
+                {% if bookmarks %}
+                <div class="bookmarks-grid">
+                    {% for disease in bookmarks %}
+                    <div class="bookmark-item">
+                        <span>🔖 {{ disease }}</span>
+                        <button onclick="removeBookmark('{{ disease }}', this)" class="btn-icon-sm">✕</button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-msg">No bookmarks yet. Check symptoms and bookmark diseases! ⭐</p>
+                {% endif %}
+            </div>
+
+            <!-- Diagnosis History -->
+            <div class="profile-section">
+                <h3>📜 Diagnosis History ({{ history|length }})</h3>
+                {% if history %}
+                <div class="history-list">
+                    {% for h in history %}
+                    <div class="history-item">
+                        <div class="history-header">
+                            <span class="history-date">🕒 {{ h.checked_at }}</span>
+                            <div class="history-predictions">
+                                {% for p in h.predictions %}
+                                <span class="chip chip-blue">{{ p.disease }} ({{ p.match_percent }}%)</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="history-symptoms">
+                            Symptoms: {% for s in h.symptoms %}<span class="chip chip-green" style="font-size:0.75rem">{{ s }}</span>{% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-msg">No history yet. Start checking your symptoms! 🩺</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function removeBookmark(disease, btn) {
+    fetch(`/bookmark/${encodeURIComponent(disease)}`, {method:'POST'})
+    .then(r => r.json())
+    .then(() => btn.closest('.bookmark-item').remove());
+}
+</script>
+{% endblock %}

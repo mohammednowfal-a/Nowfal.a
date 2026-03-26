@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}Results — MediPredict{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title" data-en="📊 Diagnosis Results" data-hi="📊 निदान परिणाम">📊 Diagnosis Results</h1>
+        <p class="page-subtitle" data-en="Based on your selected symptoms" data-hi="आपके चयनित लक्षणों के आधार पर">Based on your selected symptoms</p>
+    </div>
+</div>
+
+<div class="container results-container">
+
+    {% if show_emergency %}
+    <div class="emergency-banner">
+        🚨 <strong data-en="EMERGENCY ALERT" data-hi="आपातकालीन चेतावनी">EMERGENCY ALERT</strong> —
+        <span data-en="Your symptoms may indicate a serious condition." data-hi="आपके लक्षण गंभीर स्थिति का संकेत हो सकते हैं।">Your symptoms may indicate a serious condition.</span>
+        <div class="emergency-numbers">
+            <a href="tel:108" class="emg-btn">📞 108 Ambulance</a>
+            <a href="tel:112" class="emg-btn">🆘 112 Emergency</a>
+            <a href="tel:104" class="emg-btn">☎️ 104 Health</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="selected-summary">
+        <h3 data-en="🩺 Your Symptoms:" data-hi="🩺 आपके लक्षण:">🩺 Your Symptoms:</h3>
+        <div class="chips-row">
+            {% for s in selected_symptoms %}
+            <span class="chip chip-blue">{{ s.replace('_',' ').title() }}</span>
+            {% endfor %}
+        </div>
+        <div class="severity-tag sev-{{ severity_level }}">
+            Severity: {{ severity_level.title() }}
+        </div>
+    </div>
+
+    {% if predictions %}
+    <div class="results-disclaimer">
+        ⚠️ <strong data-en="Disclaimer:" data-hi="अस्वीकरण:">Disclaimer:</strong>
+        <span data-en="These predictions are for informational purposes only. Consult a qualified doctor for proper diagnosis." data-hi="ये भविष्यवाणियां केवल सूचनात्मक उद्देश्यों के लिए हैं। उचित निदान के लिए किसी योग्य डॉक्टर से परामर्श करें।">
+            These predictions are informational only. Always consult a qualified doctor.
+        </span>
+    </div>
+
+    <div class="results-grid">
+        {% for pred in predictions %}
+        <div class="result-card {% if loop.first %}result-card-top{% endif %}">
+            {% if loop.first %}<div class="top-badge">🏆 Most Likely</div>
+            {% elif loop.index == 2 %}<div class="top-badge badge-2">🥈 Possible</div>
+            {% else %}<div class="top-badge badge-3">🥉 Also Consider</div>{% endif %}
+
+            <div class="result-header">
+                <div>
+                    <h2 class="result-disease">{{ pred.disease }}</h2>
+                    <span class="severity-badge sev-{{ pred.severity.lower() }}">
+                        {% if pred.severity == 'Emergency' %}🚨{% elif pred.severity == 'High' %}🔴{% elif pred.severity == 'Moderate' %}🟡{% elif pred.severity == 'Mild' %}🟢{% else %}🔵{% endif %}
+                        {{ pred.severity }}
+                    </span>
+                </div>
+                <div class="result-score-wrap">
+                    <div class="score-circle {% if pred.match_percent >= 70 %}score-high{% elif pred.match_percent >= 40 %}score-med{% else %}score-low{% endif %}">
+                        {{ pred.match_percent }}%
+                    </div>
+                    {% if user %}
+                    <button class="bookmark-btn {% if pred.disease in bookmarks %}bookmarked{% endif %}"
+                            onclick="toggleBookmark('{{ pred.disease }}', this)" title="Bookmark">
+                        {% if pred.disease in bookmarks %}⭐{% else %}☆{% endif %}
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="match-bar-container">
+                <div class="match-bar-bg">
+                    <div class="match-bar-fill {% if pred.match_percent >= 70 %}fill-high{% elif pred.match_percent >= 40 %}fill-med{% else %}fill-low{% endif %}"
+                         style="width:{{ pred.match_percent }}%"></div>
+                </div>
+                <span class="match-text">{{ pred.matched_symptoms|length }} / {{ pred.total_disease_symptoms }} symptoms matched</span>
+            </div>
+
+            <div class="matched-symptoms">
+                <h4 data-en="✅ Matched Symptoms:" data-hi="✅ मिले लक्षण:">✅ Matched Symptoms:</h4>
+                <div class="chips-row">
+                    {% for sym in pred.matched_symptoms %}
+                    <span class="chip chip-green">{{ sym.title() }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="precautions">
+                <h4 data-en="🛡️ Precautions:" data-hi="🛡️ सावधानियां:">🛡️ Precautions:</h4>
+                <ul class="precaution-list">
+                    {% for p in pred.precautions %}<li>{{ p }}</li>{% endfor %}
+                </ul>
+            </div>
+
+            <div class="medicines">
+                <h4 data-en="💊 Medicine Suggestions:" data-hi="💊 दवा सुझाव:">💊 Medicine Suggestions:</h4>
+                <ul class="medicine-list">
+                    {% for m in pred.medicines %}<li>{{ m }}</li>{% endfor %}
+                </ul>
+                <p class="medicine-disclaimer" data-en="⚠️ Do not self-medicate. Consult a doctor before taking any medicine." data-hi="⚠️ स्व-दवा न लें। कोई भी दवा लेने से पहले डॉक्टर से सलाह लें।">
+                    ⚠️ Do not self-medicate. Consult a doctor before taking any medicine.
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="no-results">
+        <div style="font-size:4rem">🤔</div>
+        <h2 data-en="No Match Found" data-hi="कोई मिलान नहीं मिला">No Match Found</h2>
+        <p data-en="We couldn't match your symptoms. Try selecting more symptoms or consult a doctor." data-hi="हम आपके लक्षणों का मिलान नहीं कर सके। अधिक लक्षण चुनें या डॉक्टर से परामर्श करें।">
+            We couldn't match your symptoms. Try selecting more symptoms or consult a doctor.
+        </p>
+    </div>
+    {% endif %}
+
+    <div class="result-actions">
+        <a href="{{ url_for('symptoms') }}" class="btn btn-primary btn-large" data-en="🔄 Try Again" data-hi="🔄 पुनः प्रयास">🔄 Try Again</a>
+        <a href="{{ url_for('hospitals') }}" class="btn btn-outline btn-large" data-en="🏥 Find Hospitals" data-hi="🏥 अस्पताल खोजें">🏥 Find Hospitals</a>
+        <a href="{{ url_for('appointment') }}" class="btn btn-outline btn-large" data-en="📅 Book Appointment" data-hi="📅 अपॉइंटमेंट बुक करें">📅 Book Appointment</a>
+        <button onclick="window.print()" class="btn btn-ghost btn-large">🖨️ Print</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleBookmark(disease, btn) {
+    fetch(`/bookmark/${encodeURIComponent(disease)}`, {method:'POST'})
+    .then(r => r.json())
+    .then(data => {
+        if (data.action === 'added') { btn.textContent = '⭐'; btn.classList.add('bookmarked'); }
+        else { btn.textContent = '☆'; btn.classList.remove('bookmarked'); }
+    });
+}
+// Animate bars
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.match-bar-fill').forEach(bar => {
+        const w = bar.style.width; bar.style.width = '0%';
+        setTimeout(() => bar.style.width = w, 300);
+    });
+});
+</script>
+{% endblock %}

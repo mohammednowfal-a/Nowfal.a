@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Select Symptoms — MediPredict{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title" data-en="🩺 Select Your Symptoms" data-hi="🩺 अपने लक्षण चुनें">🩺 Select Your Symptoms</h1>
+        <p class="page-subtitle" data-en="Choose all symptoms you are currently experiencing" data-hi="वर्तमान में अनुभव किए जा रहे सभी लक्षण चुनें">Choose all symptoms you are currently experiencing</p>
+    </div>
+</div>
+
+<div class="container symptoms-container">
+    {% if error %}<div class="alert alert-error">⚠️ {{ error }}</div>{% endif %}
+
+    <form action="{{ url_for('predict') }}" method="POST" id="symptomForm" onsubmit="showLoading()">
+
+        <!-- Severity Slider -->
+        <div class="severity-slider-box">
+            <label class="slider-label" data-en="How severe are your symptoms?" data-hi="आपके लक्षण कितने गंभीर हैं?">How severe are your symptoms?</label>
+            <div class="slider-track">
+                <span class="slider-opt active" data-val="mild" onclick="setSeverity('mild',this)" data-en="😊 Mild" data-hi="😊 हल्का">😊 Mild</span>
+                <span class="slider-opt" data-val="moderate" onclick="setSeverity('moderate',this)" data-en="😐 Moderate" data-hi="😐 मध्यम">😐 Moderate</span>
+                <span class="slider-opt" data-val="severe" onclick="setSeverity('severe',this)" data-en="😰 Severe" data-hi="😰 गंभीर">😰 Severe</span>
+            </div>
+            <input type="hidden" name="severity" id="severityInput" value="mild">
+            <div class="emergency-warning" id="emergencyWarn" style="display:none">
+                🚨 <strong data-en="Severe symptoms detected! Call 108 (Ambulance) or 112 (Emergency) immediately if needed." data-hi="गंभीर लक्षण! यदि आवश्यक हो तो तुरंत 108 (एम्बुलेंस) या 112 (आपातकाल) पर कॉल करें।">Severe symptoms detected! Call 108 or 112 immediately if needed.</strong>
+            </div>
+        </div>
+
+        <!-- Search + Count -->
+        <div class="symptoms-toolbar">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" id="symptomSearch" placeholder="Search symptoms..." class="search-input" autocomplete="off">
+            </div>
+            <div class="toolbar-right">
+                <span class="selected-count" id="selectedCount">0 <span data-en="selected" data-hi="चयनित">selected</span></span>
+                <button type="button" class="btn btn-ghost btn-sm" onclick="clearAll()" data-en="Clear All" data-hi="सभी हटाएं">Clear All</button>
+            </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="category-tabs" id="categoryTabs">
+            <button type="button" class="cat-tab active" onclick="filterCategory('all',this)" data-en="All" data-hi="सभी">All</button>
+            {% for cat in categories %}
+            <button type="button" class="cat-tab" onclick="filterCategory('{{ cat }}',this)">{{ cat }}</button>
+            {% endfor %}
+        </div>
+
+        <!-- Symptoms Grid -->
+        <div class="symptoms-grid" id="symptomsGrid">
+            {% for symptom in symptoms %}
+            {% set cat = namespace(name='Other') %}
+            {% for c, syms in categories.items() %}
+              {% if symptom in syms %}{% set cat.name = c %}{% endif %}
+            {% endfor %}
+            <label class="symptom-card" data-symptom="{{ symptom }}" data-category="{{ cat.name }}">
+                <input type="checkbox" name="symptoms" value="{{ symptom }}" onchange="updateCount()">
+                <div class="symptom-content">
+                    <span class="symptom-name">{{ symptom.replace('_', ' ').title() }}</span>
+                </div>
+                <div class="check-indicator">✓</div>
+            </label>
+            {% endfor %}
+        </div>
+
+        <!-- Selected Preview -->
+        <div class="selected-symptoms-preview" id="selectedPreview" style="display:none">
+            <h3 data-en="Selected Symptoms:" data-hi="चयनित लक्षण:">Selected Symptoms:</h3>
+            <div class="selected-chips" id="selectedChips"></div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-large" id="predictBtn" disabled data-en="🔍 Predict Disease" data-hi="🔍 बीमारी का अनुमान लगाएं">🔍 Predict Disease</button>
+            <a href="{{ url_for('home') }}" class="btn btn-ghost btn-large" data-en="← Back" data-hi="← वापस">← Back</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentCategory = 'all';
+
+function setSeverity(val, el) {
+    document.getElementById('severityInput').value = val;
+    document.querySelectorAll('.slider-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('emergencyWarn').style.display = val === 'severe' ? 'block' : 'none';
+}
+
+function filterCategory(cat, el) {
+    currentCategory = cat;
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    applyFilters();
+}
+
+function applyFilters() {
+    const query = document.getElementById('symptomSearch').value.toLowerCase();
+    document.querySelectorAll('.symptom-card').forEach(card => {
+        const nameMatch = card.dataset.symptom.includes(query);
+        const catMatch = currentCategory === 'all' || card.dataset.category === currentCategory;
+        card.style.display = nameMatch && catMatch ? '' : 'none';
+    });
+}
+
+document.getElementById('symptomSearch').addEventListener('input', applyFilters);
+
+function updateCount() {
+    const checked = document.querySelectorAll('input[name="symptoms"]:checked');
+    const count = checked.length;
+    document.getElementById('selectedCount').innerHTML = count + ' <span data-en="selected" data-hi="चयनित">selected</span>';
+    document.getElementById('predictBtn').disabled = count === 0;
+    const preview = document.getElementById('selectedPreview');
+    const chips = document.getElementById('selectedChips');
+    if (count > 0) {
+        preview.style.display = 'block';
+        chips.innerHTML = Array.from(checked).map(c =>
+            `<span class="chip chip-blue">${c.value.replace(/_/g,' ')}</span>`).join('');
+    } else { preview.style.display = 'none'; }
+    document.querySelectorAll('.symptom-card').forEach(card => {
+        card.classList.toggle('selected', card.querySelector('input').checked);
+    });
+}
+
+function clearAll() {
+    document.querySelectorAll('input[name="symptoms"]').forEach(cb => cb.checked = false);
+    updateCount();
+}
+
+function showLoading() {
+    document.getElementById('loaderScreen') && (document.getElementById('loaderScreen').style.display = 'flex');
+}
+</script>
+{% endblock %}

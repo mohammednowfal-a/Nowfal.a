@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}MediPredict — Smart Disease Prediction{% endblock %}
+{% block content %}
+
+<!-- Loading Screen -->
+<div class="loader-screen" id="loaderScreen">
+    <div class="loader-content">
+        <div class="pulse-ring"></div>
+        <div class="loader-icon">⚕</div>
+        <p class="loader-text" data-en="Loading MediPredict..." data-hi="मेडीप्रेडिक्ट लोड हो रहा है...">Loading MediPredict...</p>
+    </div>
+</div>
+
+<!-- Daily Health Tip Banner -->
+<div class="tip-banner">
+    <span class="tip-label" data-en="💡 Today's Health Tip" data-hi="💡 आज की स्वास्थ्य सलाह">💡 Today's Health Tip</span>
+    <span class="tip-text">{{ tip }}</span>
+    <button onclick="this.parentElement.style.display='none'" class="tip-close">✕</button>
+</div>
+
+<section class="hero">
+    <div class="hero-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="hero-content">
+        <div class="hero-badge" data-en="🧬 AI-Powered Health Insights" data-hi="🧬 एआई-संचालित स्वास्थ्य जानकारी">🧬 AI-Powered Health Insights</div>
+        <h1 class="hero-title">
+            <span data-en="Know What Your" data-hi="जानें आपके">Know What Your</span><br>
+            <span class="gradient-text" data-en="Symptoms Mean" data-hi="लक्षणों का अर्थ">Symptoms Mean</span>
+        </h1>
+        <p class="hero-subtitle" data-en="Select your symptoms and instantly get disease predictions with medicine suggestions and precautions." data-hi="अपने लक्षण चुनें और तुरंत बीमारी की भविष्यवाणी, दवा सुझाव और सावधानियां पाएं।">
+            Select your symptoms and instantly get disease predictions with medicine suggestions and precautions.
+        </p>
+        <div class="hero-actions">
+            <a href="{{ url_for('symptoms') }}" class="btn btn-primary btn-large" data-en="🔍 Check My Symptoms" data-hi="🔍 मेरे लक्षण जांचें">🔍 Check My Symptoms</a>
+            <a href="{{ url_for('bmi') }}" class="btn btn-ghost btn-large" data-en="🧬 BMI Calculator" data-hi="🧬 बीएमआई कैलकुलेटर">🧬 BMI Calculator</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat"><span class="stat-num">25+</span><span class="stat-label" data-en="Diseases" data-hi="बीमारियाँ">Diseases</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat"><span class="stat-num">77+</span><span class="stat-label" data-en="Symptoms" data-hi="लक्षण">Symptoms</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat"><span class="stat-num">100%</span><span class="stat-label" data-en="Free" data-hi="मुफ़्त">Free</span></div>
+        </div>
+    </div>
+    <div class="hero-visual">
+        <div class="medical-card">
+            <div class="mc-header"><span class="mc-icon">🏥</span><span data-en="Diagnosis Report" data-hi="निदान रिपोर्ट">Diagnosis Report</span></div>
+            <div class="mc-symptoms">
+                <span class="chip chip-red" data-en="Fever" data-hi="बुखार">Fever</span>
+                <span class="chip chip-orange" data-en="Cough" data-hi="खांसी">Cough</span>
+                <span class="chip chip-yellow" data-en="Fatigue" data-hi="थकान">Fatigue</span>
+                <span class="chip chip-blue" data-en="Headache" data-hi="सिरदर्द">Headache</span>
+            </div>
+            <div class="mc-result">
+                <div class="mc-disease">
+                    <span class="mc-label" data-en="Predicted Disease" data-hi="संभावित बीमारी">Predicted Disease</span>
+                    <span class="mc-name" data-en="Influenza (Flu)" data-hi="इन्फ्लुएंजा (फ्लू)">Influenza (Flu)</span>
+                </div>
+                <div class="mc-match">
+                    <div class="match-bar"><div class="match-fill" style="width:85%"></div></div>
+                    <span>85% Match</span>
+                </div>
+            </div>
+            <div class="severity-badge sev-moderate">⚠️ Moderate</div>
+        </div>
+    </div>
+</section>
+
+<!-- Feature Cards -->
+<section class="features">
+    <div class="container">
+        <h2 class="section-title" data-en="Everything You Need" data-hi="जो आपको चाहिए">Everything You Need</h2>
+        <div class="features-grid">
+            <a href="{{ url_for('symptoms') }}" class="feature-card">
+                <div class="feature-icon">🩺</div>
+                <h3 data-en="Symptom Checker" data-hi="लक्षण जांचकर्ता">Symptom Checker</h3>
+                <p data-en="Select from 77+ symptoms grouped by body part and get instant predictions." data-hi="शरीर के अंग के अनुसार 77+ लक्षणों में से चुनें।">Select from 77+ symptoms grouped by body part and get instant predictions.</p>
+            </a>
+            <a href="{{ url_for('bmi') }}" class="feature-card">
+                <div class="feature-icon">🧬</div>
+                <h3>BMI Calculator</h3>
+                <p data-en="Check your Body Mass Index and get personalized health advice." data-hi="अपना बीएमआई जांचें और व्यक्तिगत स्वास्थ्य सलाह पाएं।">Check your Body Mass Index and get personalized health advice.</p>
+            </a>
+            <a href="{{ url_for('hospitals') }}" class="feature-card">
+                <div class="feature-icon">🏥</div>
+                <h3 data-en="Nearby Hospitals" data-hi="नजदीकी अस्पताल">Nearby Hospitals</h3>
+                <p data-en="Find hospitals near your city and get directions instantly." data-hi="अपने शहर के पास अस्पताल खोजें और तुरंत दिशा-निर्देश पाएं।">Find hospitals near your city and get directions instantly.</p>
+            </a>
+            <a href="{{ url_for('appointment') }}" class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3 data-en="Book Appointment" data-hi="अपॉइंटमेंट बुक करें">Book Appointment</h3>
+                <p data-en="Schedule a doctor appointment reminder with notes." data-hi="नोट्स के साथ डॉक्टर अपॉइंटमेंट अनुस्मारक शेड्यूल करें।">Schedule a doctor appointment reminder with notes.</p>
+            </a>
+            <a href="{{ url_for('register') }}" class="feature-card">
+                <div class="feature-icon">📜</div>
+                <h3 data-en="Diagnosis History" data-hi="निदान इतिहास">Diagnosis History</h3>
+                <p data-en="Register to save and review all your past symptom checks." data-hi="अपनी सभी पिछली लक्षण जांच सहेजने और समीक्षा करने के लिए रजिस्टर करें।">Register to save and review all your past symptom checks.</p>
+            </a>
+            <div class="feature-card">
+                <div class="feature-icon">🚨</div>
+                <h3 data-en="Emergency Contacts" data-hi="आपातकालीन संपर्क">Emergency Contacts</h3>
+                <p>📞 <strong>Ambulance: 108</strong> &nbsp;|&nbsp; 🆘 <strong>Emergency: 112</strong> &nbsp;|&nbsp; ☎️ <strong>Health Helpline: 104</strong></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}BMI Calculator — MediPredict{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title" data-en="🧬 BMI Calculator" data-hi="🧬 बीएमआई कैलकुलेटर">🧬 BMI Calculator</h1>
+        <p class="page-subtitle" data-en="Check your Body Mass Index and get health advice" data-hi="अपना बीएमआई जांचें और स्वास्थ्य सलाह पाएं">Check your Body Mass Index and get health advice</p>
+    </div>
+</div>
+<div class="container" style="max-width:700px; padding:40px 24px 80px">
+    <div class="bmi-card">
+        <div class="bmi-inputs">
+            <div class="form-group">
+                <label data-en="Weight (kg)" data-hi="वजन (किग्रा)">Weight (kg)</label>
+                <input type="number" id="weight" class="form-input" placeholder="e.g. 65" min="1" max="300">
+            </div>
+            <div class="form-group">
+                <label data-en="Height (cm)" data-hi="ऊंचाई (सेमी)">Height (cm)</label>
+                <input type="number" id="height" class="form-input" placeholder="e.g. 170" min="50" max="250">
+            </div>
+            <div class="form-group">
+                <label data-en="Age" data-hi="आयु">Age</label>
+                <input type="number" id="age" class="form-input" placeholder="e.g. 25" min="1" max="120">
+            </div>
+            <div class="form-group">
+                <label data-en="Gender" data-hi="लिंग">Gender</label>
+                <select id="gender" class="form-input">
+                    <option value="male" data-en="Male" data-hi="पुरुष">Male</option>
+                    <option value="female" data-en="Female" data-hi="महिला">Female</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="calculateBMI()" class="btn btn-primary btn-large btn-full" data-en="Calculate BMI" data-hi="बीएमआई की गणना करें">Calculate BMI</button>
+
+        <div id="bmiResult" style="display:none; margin-top:32px">
+            <div class="bmi-display">
+                <div class="bmi-number" id="bmiValue">0</div>
+                <div class="bmi-label" id="bmiLabel">—</div>
+            </div>
+            <div class="bmi-scale">
+                <div class="bmi-range bmi-under">Underweight<br>&lt;18.5</div>
+                <div class="bmi-range bmi-normal">Normal<br>18.5–24.9</div>
+                <div class="bmi-range bmi-over">Overweight<br>25–29.9</div>
+                <div class="bmi-range bmi-obese">Obese<br>≥30</div>
+            </div>
+            <div class="bmi-advice" id="bmiAdvice"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function calculateBMI() {
+    const w = parseFloat(document.getElementById('weight').value);
+    const h = parseFloat(document.getElementById('height').value) / 100;
+    if (!w || !h) { alert('Please enter weight and height'); return; }
+    const bmi = (w / (h * h)).toFixed(1);
+    let label, advice, color;
+    if (bmi < 18.5) {
+        label = '⚠️ Underweight'; color = '#f59e0b';
+        advice = '🥗 You need to gain weight. Eat more nutritious foods, proteins, and healthy fats. Consult a nutritionist.';
+    } else if (bmi < 25) {
+        label = '✅ Normal Weight'; color = '#06d6a0';
+        advice = '🎉 Great! Your weight is healthy. Maintain it with regular exercise and a balanced diet.';
+    } else if (bmi < 30) {
+        label = '⚠️ Overweight'; color = '#f59e0b';
+        advice = '🏃 You should lose some weight. Exercise regularly, reduce sugar & processed food intake.';
+    } else {
+        label = '🔴 Obese'; color = '#ef4444';
+        advice = '🏥 Obesity increases health risks. Consult a doctor and follow a structured diet & exercise plan.';
+    }
+    document.getElementById('bmiValue').textContent = bmi;
+    document.getElementById('bmiValue').style.color = color;
+    document.getElementById('bmiLabel').textContent = label;
+    document.getElementById('bmiAdvice').innerHTML = `<div class="advice-box">${advice}</div>`;
+    document.getElementById('bmiResult').style.display = 'block';
+    document.getElementById('bmiResult').scrollIntoView({behavior:'smooth'});
+}
+</script>
+{% endblock %}

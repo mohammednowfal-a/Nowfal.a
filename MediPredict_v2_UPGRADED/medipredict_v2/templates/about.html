@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}About — MediPredict{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title">ℹ️ About MediPredict</h1>
+        <p class="page-subtitle">Symptom-Based Disease Prediction System</p>
+    </div>
+</div>
+<div class="container about-container">
+    <div class="about-grid">
+        <div class="about-card">
+            <h2>🎯 Purpose</h2>
+            <p>MediPredict is an educational project demonstrating AI-assisted disease prediction using symptom matching. Built as a final-year project using Python Flask + SQLite.</p>
+        </div>
+        <div class="about-card">
+            <h2>🛠️ Tech Stack</h2>
+            <ul class="about-list">
+                <li>🐍 Python 3 + Flask</li>
+                <li>🗄️ SQLite (user accounts, history)</li>
+                <li>🌐 HTML5 + CSS3 + Vanilla JS</li>
+                <li>📊 CSV Dataset (25+ diseases)</li>
+            </ul>
+        </div>
+        <div class="about-card">
+            <h2>✨ Features</h2>
+            <ul class="about-list">
+                <li>🩺 77+ Symptom checker with categories</li>
+                <li>💊 Medicine suggestions</li>
+                <li>🏥 Nearby hospital finder</li>
+                <li>📅 Appointment reminder</li>
+                <li>🧬 BMI calculator</li>
+                <li>📜 Diagnosis history</li>
+                <li>⭐ Disease bookmarks</li>
+                <li>🌐 Hindi/English toggle</li>
+                <li>🌗 Dark/Light mode</li>
+            </ul>
+        </div>
+        <div class="about-card about-card-warn">
+            <h2>⚠️ Disclaimer</h2>
+            <p>This system is <strong>NOT a medical device</strong>. Predictions are based on a simple dataset. Always consult a qualified healthcare provider for diagnosis and treatment.</p>
+        </div>
+    </div>
+    <div style="text-align:center; margin-top:40px">
+        <a href="{{ url_for('symptoms') }}" class="btn btn-primary btn-large">Try It Now →</a>
+    </div>
+</div>
+{% endblock %}

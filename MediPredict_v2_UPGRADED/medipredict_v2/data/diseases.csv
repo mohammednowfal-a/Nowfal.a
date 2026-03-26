@@ -1,0 +1,26 @@
+Disease,Symptom1,Symptom2,Symptom3,Symptom4,Symptom5,Symptom6,Precaution1,Precaution2,Precaution3,Precaution4
+Flu,fever,cough,headache,fatigue,sore throat,runny nose,Rest and sleep,Drink plenty of fluids,Take fever-reducing medication,Consult a doctor if symptoms worsen
+Common Cold,runny nose,sneezing,sore throat,mild fever,cough,fatigue,Stay hydrated,Rest well,Use saline nasal spray,Avoid contact with others
+COVID-19,fever,cough,shortness of breath,fatigue,loss of taste,loss of smell,Isolate immediately,Wear a mask,Contact healthcare provider,Monitor oxygen levels
+Malaria,fever,chills,headache,nausea,vomiting,muscle pain,Take antimalarial medication,Use mosquito nets,Stay indoors at dusk,Consult a doctor immediately
+Dengue,fever,severe headache,joint pain,rash,eye pain,nausea,Rest completely,Stay hydrated,Avoid aspirin,Seek medical attention
+Typhoid,fever,abdominal pain,headache,constipation,weakness,rash,Take prescribed antibiotics,Drink clean water only,Eat easily digestible food,Maintain hygiene
+Pneumonia,fever,cough,chest pain,shortness of breath,fatigue,chills,Seek medical attention,Take prescribed antibiotics,Rest completely,Use a humidifier
+Tuberculosis,persistent cough,cough with blood,chest pain,fatigue,weight loss,night sweats,Complete full antibiotic course,Wear a mask,Avoid crowded places,Improve ventilation
+Asthma,shortness of breath,wheezing,chest tightness,cough,breathlessness,,,Use prescribed inhaler,Avoid known triggers,Monitor peak flow,See a pulmonologist
+Diabetes,increased thirst,frequent urination,fatigue,blurred vision,slow healing,weight loss,Monitor blood sugar,Follow diabetic diet,Exercise regularly,Take prescribed medication
+Hypertension,headache,dizziness,chest pain,shortness of breath,nosebleed,vision changes,Reduce salt intake,Exercise regularly,Take prescribed medication,Monitor blood pressure daily
+Gastroenteritis,diarrhea,nausea,vomiting,abdominal pain,fever,dehydration,Stay hydrated with ORS,Eat bland food,Rest,See a doctor if severe
+Migraine,severe headache,nausea,vomiting,light sensitivity,sound sensitivity,vision changes,Rest in a dark quiet room,Take pain relief medication,Avoid known triggers,Stay hydrated
+Anemia,fatigue,weakness,pale skin,shortness of breath,dizziness,cold hands,Eat iron-rich foods,Take iron supplements,Consult a doctor,Avoid tea/coffee with meals
+Jaundice,yellowing of skin,yellowing of eyes,dark urine,fatigue,abdominal pain,nausea,Avoid alcohol completely,Eat light food,Rest completely,Consult a hepatologist
+Chickenpox,rash,fever,fatigue,itching,blisters,headache,Avoid scratching,Take antihistamines,Use calamine lotion,Isolate from others
+Measles,fever,rash,cough,runny nose,red eyes,mouth sores,Rest and isolate,Stay hydrated,Take fever medication,See a doctor immediately
+Arthritis,joint pain,joint swelling,stiffness,reduced range of motion,fatigue,redness,Take anti-inflammatory medication,Exercise gently,Use hot/cold therapy,Consult a rheumatologist
+Urinary Tract Infection,burning urination,frequent urination,cloudy urine,pelvic pain,fever,back pain,Drink plenty of water,Take prescribed antibiotics,Avoid irritants,Maintain hygiene
+Appendicitis,severe abdominal pain,nausea,vomiting,fever,loss of appetite,abdominal tenderness,Seek emergency care,Do not eat or drink,Avoid pain medication until diagnosed,Surgery may be required
+Sinusitis,facial pain,nasal congestion,headache,runny nose,postnasal drip,cough,Use nasal decongestants,Steam inhalation,Saline nasal rinse,See a doctor if persistent
+Allergy,sneezing,runny nose,itching,rash,watery eyes,swelling,Avoid allergens,Take antihistamines,Carry an EpiPen if severe,Consult an allergist
+Heart Disease,chest pain,shortness of breath,fatigue,palpitations,dizziness,swollen ankles,Seek emergency care,Take prescribed medication,Adopt heart-healthy diet,Quit smoking
+Kidney Stones,severe back pain,side pain,painful urination,blood in urine,nausea,vomiting,Drink plenty of water,Take pain relief medication,See a urologist,Strain urine to catch stones
+Depression,sadness,fatigue,sleep changes,appetite changes,concentration problems,loss of interest,Seek professional help,Talk to loved ones,Maintain routine,Avoid alcohol

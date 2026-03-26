@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Book Appointment — MediPredict{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title" data-en="📅 Book Appointment" data-hi="📅 अपॉइंटमेंट बुक करें">📅 Doctor Appointment</h1>
+        <p class="page-subtitle" data-en="Schedule a reminder for your doctor visit" data-hi="अपनी डॉक्टर की यात्रा के लिए अनुस्मारक शेड्यूल करें">Schedule a reminder for your doctor visit</p>
+    </div>
+</div>
+<div class="container" style="max-width:650px; padding:40px 24px 100px">
+    <div class="appointment-card">
+        <div id="appointmentForm">
+            <div class="form-group">
+                <label data-en="Your Name" data-hi="आपका नाम">Your Name</label>
+                <input type="text" id="apptName" class="form-input" placeholder="Full name" value="{{ user.name if user else '' }}">
+            </div>
+            <div class="form-group">
+                <label data-en="Doctor / Hospital Name" data-hi="डॉक्टर / अस्पताल का नाम">Doctor / Hospital Name</label>
+                <input type="text" id="apptDoctor" class="form-input" placeholder="Dr. Sharma / Apollo Hospital">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label data-en="Date" data-hi="तारीख">Date</label>
+                    <input type="date" id="apptDate" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label data-en="Time" data-hi="समय">Time</label>
+                    <input type="time" id="apptTime" class="form-input">
+                </div>
+            </div>
+            <div class="form-group">
+                <label data-en="Reason / Symptoms" data-hi="कारण / लक्षण">Reason / Symptoms</label>
+                <textarea id="apptReason" class="form-input" rows="3" placeholder="Describe your symptoms or reason for visit..."></textarea>
+            </div>
+            <div class="form-group">
+                <label data-en="Contact Number" data-hi="संपर्क नंबर">Contact Number</label>
+                <input type="tel" id="apptPhone" class="form-input" placeholder="Your phone number">
+            </div>
+            <button onclick="saveAppointment()" class="btn btn-primary btn-full btn-large" data-en="📅 Save Reminder" data-hi="📅 अनुस्मारक सहेजें">📅 Save Reminder</button>
+        </div>
+
+        <div id="apptSuccess" style="display:none; text-align:center; padding:40px 0">
+            <div style="font-size:4rem">✅</div>
+            <h2 style="font-family:'Syne',sans-serif; margin:16px 0" data-en="Appointment Saved!" data-hi="अपॉइंटमेंट सहेजा गया!">Appointment Saved!</h2>
+            <div class="appt-summary" id="apptSummary"></div>
+            <div style="margin-top:24px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap">
+                <button onclick="printAppt()" class="btn btn-outline btn-large">🖨️ Print</button>
+                <button onclick="document.getElementById('apptSuccess').style.display='none'; document.getElementById('appointmentForm').style.display='block'" class="btn btn-ghost btn-large" data-en="+ New Appointment" data-hi="+ नई अपॉइंटमेंट">+ New Appointment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Saved Appointments -->
+    <div id="savedAppointments" style="margin-top:32px"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let appointments = JSON.parse(localStorage.getItem('medipredict_appointments') || '[]');
+
+function renderSaved() {
+    const container = document.getElementById('savedAppointments');
+    if (!appointments.length) { container.innerHTML = ''; return; }
+    container.innerHTML = `<h3 style="font-family:'Syne',sans-serif; margin-bottom:16px">📋 Saved Appointments</h3>` +
+        appointments.map((a, i) => `
+        <div class="appointment-item">
+            <div><strong>${a.doctor}</strong> — ${a.date} at ${a.time}</div>
+            <div style="color:var(--text-muted); font-size:0.9rem">${a.name} | ${a.reason}</div>
+            <button onclick="deleteAppt(${i})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:0.85rem">🗑️ Delete</button>
+        </div>`).join('');
+}
+
+function saveAppointment() {
+    const name = document.getElementById('apptName').value.trim();
+    const doctor = document.getElementById('apptDoctor').value.trim();
+    const date = document.getElementById('apptDate').value;
+    const time = document.getElementById('apptTime').value;
+    const reason = document.getElementById('apptReason').value.trim();
+    if (!name || !doctor || !date) { alert('Please fill Name, Doctor, and Date'); return; }
+    const appt = { name, doctor, date, time, reason };
+    appointments.unshift(appt);
+    localStorage.setItem('medipredict_appointments', JSON.stringify(appointments));
+    document.getElementById('apptSummary').innerHTML = `
+        <div class="appt-detail"><strong>Patient:</strong> ${name}</div>
+        <div class="appt-detail"><strong>Doctor/Hospital:</strong> ${doctor}</div>
+        <div class="appt-detail"><strong>Date & Time:</strong> ${date} at ${time}</div>
+        <div class="appt-detail"><strong>Reason:</strong> ${reason || 'Not specified'}</div>`;
+    document.getElementById('appointmentForm').style.display = 'none';
+    document.getElementById('apptSuccess').style.display = 'block';
+    renderSaved();
+}
+
+function deleteAppt(i) { appointments.splice(i, 1); localStorage.setItem('medipredict_appointments', JSON.stringify(appointments)); renderSaved(); }
+function printAppt() { window.print(); }
+
+// Set min date to today
+document.getElementById('apptDate').min = new Date().toISOString().split('T')[0];
+renderSaved();
+</script>
+{% endblock %}
